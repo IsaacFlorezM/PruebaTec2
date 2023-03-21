@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Bar Chart with D3.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <label for="source-data">Source Data:</label>
+          <input type="text" class="form-control" id="source-data" placeholder="Enter comma-separated integers">
+        </div>
+        <div class="col-md-6">
+          <button class="btn btn-primary" id="update-data">Update Data</button>
+        </div>
+      </div>
+      <hr>
+      <div id="chart"></div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- JavaScript -->
+    <script>
+      // Define el ancho y alto del gráfico de barras
+      const width = 500;
+      const height = 300;
+
+      // Seleccione el elemento #chart y cree un SVG dentro de él
+      const svg = d3.select("#chart")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      // Función para actualizar el gráfico de barras con los nuevos datos
+      function updateChart() {
+        // Obtenga los datos de la entrada de texto
+        const input = d3.select("#source-data").property("value");
+        const data = input.split(",").map(d => +d);
+
+        // Eliminar cualquier barra existente
+        svg.selectAll(".bar").remove();
+
+        // Crear las barras
+        const barWidth = width / data.length;
+        const bar = svg.selectAll(".bar")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", (d, i) => i * barWidth)
+          .attr("y", d => height - d)
+          .attr("width", barWidth - 1)
+          .attr("height", d => d);
+
+        // Animar las barras al cambiar los datos
+        bar.transition()
+          .duration(1000)
+          .attr("y", d => height - d)
+          .attr("height", d => d);
+      }
+
+      // Agregue un controlador de eventos al botón de actualización de datos
+      d3.select("#update-data")
+        .on("click", updateChart);
+    </script>
+  </body>
+</html>
